@@ -17,12 +17,14 @@ services:
       context: ./mariadb
       dockerfile: Dockerfile_mariadb
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: school_db
       MYSQL_USER: flask_user
       MYSQL_PASSWORD: flask_password
+    volumes:
+      - mariadb-data:/var/lib/mysql  # Persistência de dados do MariaDB
 
   prometheus:
     image: prom/prometheus
@@ -40,7 +42,7 @@ services:
     ports:
       - "9104:9104"
     environment:
-      DATA_SOURCE_NAME: "user:password@(mariadb:3306)/"
+      DATA_SOURCE_NAME: "flask_user:flask_password@(mariadb:3306)/"
     depends_on:
       - mariadb
 
@@ -55,3 +57,8 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 'admin'  # Senha padrão para o Grafana
+
+volumes:
+  mariadb-data:  # Volumes para persistência de dados

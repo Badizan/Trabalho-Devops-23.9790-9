@@ -35,7 +35,7 @@ pipeline {
                 script {
                     // Rodar os testes dentro do contêiner de testes com Docker Compose
                     sh '''
-                        docker-compose run --rm test
+                        docker exec grafana-prometheus-project_flask_1 python -m unittest test_app.py
                     '''
                 }
             }

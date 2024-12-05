@@ -11,8 +11,6 @@ services:
       - FLASK_ENV=development
     depends_on:
       - mariadb
-    networks:
-      - backend
 
   mariadb:
     build:
@@ -27,9 +25,7 @@ services:
       MYSQL_PASSWORD: flask_password
     volumes:
       - mariadb-data:/var/lib/mysql # Persistência de dados do MariaDB
-    networks:
-      - backend
-      - monitoring
+   
 
   prometheus:
     image: prom/prometheus
@@ -41,20 +37,17 @@ services:
       - mysqld_exporter
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-    networks:
-      - monitoring
-
+    
   mysqld_exporter:
     image: prom/mysqld-exporter
     ports:
       - "9104:9104"
-    environment:
-      DATA_SOURCE_NAME: "flask_user:flask_password@(mariadb:3306)/"
     depends_on:
       - mariadb
-    networks:
-      - monitoring
-
+    command:
+     - "--mysqld.username=flask_user:flask_password"
+     - "--mysqld.address=127.0.0.1:9104"
+     
   grafana:
     build:
       context: ./grafana
@@ -69,14 +62,8 @@ services:
     environment:
       GF_SECURITY_ADMIN_PASSWORD: 'admin'  # Senha padrão para o Grafana
       GF_SECURITY_ALLOW_EMBEDDING: 'false' # Desabilita embutir o Grafana em outros sites
-    networks:
-      - monitoring
+  
 
 volumes:
   mariadb-data: # Volume para persistência de dados do MariaDB
 
-networks:
-  backend:
-    driver: bridge
-  monitoring:
-    driver: bridge

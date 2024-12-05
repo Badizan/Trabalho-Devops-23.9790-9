@@ -58,6 +58,32 @@
             "show": true
           }
         ]
+      },
+      {
+        "type": "graph",
+        "title": "Web App Requests per Second",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[1m])",
+            "format": "time_series",
+            "intervalFactor": 1,
+            "legendFormat": "Requests per Second",
+            "refId": "C"
+          }
+        ],
+        "datasource": "Prometheus",
+        "xaxis": {
+          "show": true
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "show": true
+          },
+          {
+            "show": true
+          }
+        ]
       }
     ],
     "refresh": "5s",

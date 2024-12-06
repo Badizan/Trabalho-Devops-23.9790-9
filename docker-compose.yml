@@ -46,7 +46,7 @@ services:
       - mariadb
     command:
      - "--mysqld.username=flask_user:flask_password"
-     - "--mysqld.address=127.0.0.1:9104"
+     - "--mysqld.address=mariadb:3306"
      
   grafana:
     build:
@@ -66,4 +66,3 @@ services:
 
 volumes:
   mariadb-data: # Volume para persistência de dados do MariaDB
-
